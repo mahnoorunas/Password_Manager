@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-const { Command } = require("commander");
+import { Command } from "commander";
 
-const addPassword = require("./commands/add");
-const listPasswords = require("./commands/list");
-const checkPassword = require("./commands/check");
-const generatePassword = require("./commands/generate");
-const generateReport = require("./commands/report");
+import addPassword from "./commands/add";
+import listPasswords from "./commands/list";
+import checkPassword from "./commands/check";
+import generatePassword from "./commands/generate";
+import generateReport from "./commands/report";
 
 const program = new Command();
 

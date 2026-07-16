@@ -1,9 +1,15 @@
 {
   "name": "password_manager",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "pm:add": "npm run build && node dist/index.js add",
+    "pm:list": "npm run build && node dist/index.js list",
+    "pm:check": "npm run build && node dist/index.js check",
+    "pm:generate": "npm run build && node dist/index.js generate",
+    "pm:report": "npm run build && node dist/index.js report"
   },
   "keywords": [],
   "author": "",
@@ -13,5 +19,9 @@
     "bcrypt": "^6.0.0",
     "chalk": "^5.6.2",
     "commander": "^15.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "typescript": "^7.0.2"
   }
 }
