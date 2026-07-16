@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt";
 import * as readline from "readline";
 import { loadPasswords, savePasswords, PasswordEntry } from "../data";
 import checkPasswordStrength from "../utils/passwordStrength";
@@ -16,29 +17,27 @@ export default async function (): Promise<void> {
   };
 
   const account: string = await ask("Enter Account Name: ");
-  const password: string = await ask("Enter Password: ");
+const password: string = await ask("Enter Password: ");
 
-  rl.close();
+rl.close();
 
-  const strength: string = checkPasswordStrength(password);
+const strength: string = checkPasswordStrength(password);
 
-  console.log("\nChecking breach status...");
+console.log("\nChecking breach status...");
 
-  const breached: boolean = await checkBreach(password);
+const breached: boolean = await checkBreach(password);
 
-  const passwords: PasswordEntry[] = loadPasswords();
+// Hash the password only when you're ready to save it
+const hashedPassword: string = await bcrypt.hash(password, 10);
 
-  passwords.push({
-    account,
-    password,
-    strength,
-    breached,
-  });
+const passwords: PasswordEntry[] = loadPasswords();
 
-  savePasswords(passwords);
+passwords.push({
+  account,
+  password: hashedPassword,
+  strength,
+  breached,
+});
 
-  console.log("\nPassword Saved Successfully!\n");
-  console.log("Account :", account);
-  console.log("Strength:", strength);
-  console.log("Breached:", breached ? "YES" : "NO");
+savePasswords(passwords);
 }

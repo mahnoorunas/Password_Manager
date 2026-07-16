@@ -37,6 +37,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = default_1;
+const bcrypt_1 = __importDefault(require("bcrypt"));
 const readline = __importStar(require("readline"));
 const data_1 = require("../data");
 const passwordStrength_1 = __importDefault(require("../utils/passwordStrength"));
@@ -57,17 +58,15 @@ async function default_1() {
     const strength = (0, passwordStrength_1.default)(password);
     console.log("\nChecking breach status...");
     const breached = await (0, breachChecker_1.default)(password);
+    // Hash the password only when you're ready to save it
+    const hashedPassword = await bcrypt_1.default.hash(password, 10);
     const passwords = (0, data_1.loadPasswords)();
     passwords.push({
         account,
-        password,
+        password: hashedPassword,
         strength,
         breached,
     });
     (0, data_1.savePasswords)(passwords);
-    console.log("\nPassword Saved Successfully!\n");
-    console.log("Account :", account);
-    console.log("Strength:", strength);
-    console.log("Breached:", breached ? "YES" : "NO");
 }
 //# sourceMappingURL=add.js.map
