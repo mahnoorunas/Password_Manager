@@ -1,3 +1,4 @@
+import { decrypt } from "../utils/encrypt";
 import { loadPasswords, PasswordEntry } from "../data";
 
 export default function (): void {
@@ -14,7 +15,7 @@ export default function (): void {
     console.log(`${index + 1}.`);
 
     console.log("Account :", item.account);
-    console.log("Password:", item.password);
+    console.log("Password:", decrypt(item.password));
     console.log("Strength:", item.strength);
     console.log("Breached:", item.breached ? "YES" : "NO");
 

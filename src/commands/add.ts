@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import { encrypt } from "../utils/encrypt";
 import * as readline from "readline";
 import { loadPasswords, savePasswords, PasswordEntry } from "../data";
 import checkPasswordStrength from "../utils/passwordStrength";
@@ -27,14 +27,12 @@ console.log("\nChecking breach status...");
 
 const breached: boolean = await checkBreach(password);
 
-// Hash the password only when you're ready to save it
-const hashedPassword: string = await bcrypt.hash(password, 10);
-
+const encryptedPassword = encrypt(password);
 const passwords: PasswordEntry[] = loadPasswords();
 
 passwords.push({
   account,
-  password: hashedPassword,
+  password: encryptedPassword,
   strength,
   breached,
 });

@@ -32,40 +32,38 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = default_1;
-const encrypt_1 = require("../utils/encrypt");
-const readline = __importStar(require("readline"));
-const data_1 = require("../data");
-const passwordStrength_1 = __importDefault(require("../utils/passwordStrength"));
-const breachChecker_1 = __importDefault(require("../utils/breachChecker"));
-async function default_1() {
-    const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout,
-    });
-    const ask = (question) => {
-        return new Promise((resolve) => {
-            rl.question(question, resolve);
-        });
-    };
-    const account = await ask("Enter Account Name: ");
-    const password = await ask("Enter Password: ");
-    rl.close();
-    const strength = (0, passwordStrength_1.default)(password);
-    console.log("\nChecking breach status...");
-    const breached = await (0, breachChecker_1.default)(password);
-    const encryptedPassword = (0, encrypt_1.encrypt)(password);
-    const passwords = (0, data_1.loadPasswords)();
-    passwords.push({
-        account,
-        password: encryptedPassword,
-        strength,
-        breached,
-    });
-    (0, data_1.savePasswords)(passwords);
+exports.encrypt = encrypt;
+exports.decrypt = decrypt;
+const crypto = __importStar(require("crypto"));
+const ALGORITHM = "aes-256-cbc";
+// Secret key (32 bytes for AES-256)
+const SECRET_KEY = crypto
+    .createHash("sha256")
+    .update("my-super-secret-key")
+    .digest();
+function encrypt(text) {
+    // Generate a random IV (16 bytes)
+    const iv = crypto.randomBytes(16);
+    // Create cipher
+    const cipher = crypto.createCipheriv(ALGORITHM, SECRET_KEY, iv);
+    // Encrypt the text
+    let encrypted = cipher.update(text, "utf8", "hex");
+    encrypted += cipher.final("hex");
+    // Store IV and encrypted text together
+    return iv.toString("hex") + ":" + encrypted;
 }
-//# sourceMappingURL=add.js.map
+function decrypt(encryptedText) {
+    const parts = encryptedText.split(":");
+    if (parts.length !== 2) {
+        throw new Error("Invalid encrypted text format.");
+    }
+    const ivHex = parts[0];
+    const encrypted = parts[1];
+    const iv = Buffer.from(ivHex, "hex");
+    const decipher = crypto.createDecipheriv(ALGORITHM, SECRET_KEY, iv);
+    let decrypted = decipher.update(encrypted, "hex", "utf8");
+    decrypted += decipher.final("utf8");
+    return decrypted;
+}
+//# sourceMappingURL=encrypt.js.map

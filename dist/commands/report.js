@@ -9,7 +9,7 @@ function default_1() {
     const medium = passwords.filter((p) => p.strength === "Medium").length;
     const weak = passwords.filter((p) => p.strength === "Weak").length;
     const breached = passwords.filter((p) => p.breached).length;
-    console.log("\n========== Password Security Report ==========\n");
+    console.log("\n=====Password Security Report =====\n");
     console.log("Total Passwords :", total);
     console.log("Strong Passwords :", strong);
     console.log("Medium Passwords :", medium);

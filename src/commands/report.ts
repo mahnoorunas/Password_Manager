@@ -21,7 +21,7 @@ export default function (): void {
     (p: PasswordEntry) => p.breached
   ).length;
 
-  console.log("\n========== Password Security Report ==========\n");
+  console.log("\n=====Password Security Report =====\n");
 
   console.log("Total Passwords :", total);
   console.log("Strong Passwords :", strong);
