@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { Command } from "commander";
-
+import { connectDB } from "./database/connection";
 import addPassword from "./commands/add";
 import listPasswords from "./commands/list";
 import checkPassword from "./commands/check";
@@ -44,5 +44,8 @@ program
   .command("report")
   .description("Generate security report")
   .action(generateReport);
-
-program.parse();
+  async function main() {
+  await connectDB();   // Connect to MongoDB first
+  program.parse();     // Then run the CLI
+}
+main();

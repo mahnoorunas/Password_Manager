@@ -1,9 +1,12 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = default_1;
-const data_1 = require("../data");
-function default_1() {
-    const passwords = (0, data_1.loadPasswords)();
+const Password_1 = __importDefault(require("../models/Password"));
+async function default_1() {
+    const passwords = await Password_1.default.find();
     const total = passwords.length;
     const strong = passwords.filter((p) => p.strength === "Strong").length;
     const medium = passwords.filter((p) => p.strength === "Medium").length;

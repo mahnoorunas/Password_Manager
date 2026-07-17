@@ -1,6 +1,7 @@
-import { encrypt } from "../utils/encrypt";
 import * as readline from "readline";
-import { loadPasswords, savePasswords, PasswordEntry } from "../data";
+
+import Password from "../models/Password";
+import { encrypt } from "../utils/encrypt";
 import checkPasswordStrength from "../utils/passwordStrength";
 import checkBreach from "../utils/breachChecker";
 
@@ -16,26 +17,34 @@ export default async function (): Promise<void> {
     });
   };
 
-  const account: string = await ask("Enter Account Name: ");
-const password: string = await ask("Enter Password: ");
+  try {
+    const account = await ask("Enter Account Name: ");
+    const password = await ask("Enter Password: ");
 
-rl.close();
+    rl.close();
 
-const strength: string = checkPasswordStrength(password);
+    const strength = checkPasswordStrength(password);
 
-console.log("\nChecking breach status...");
+    console.log("\nChecking breach status...");
 
-const breached: boolean = await checkBreach(password);
+    const breached = await checkBreach(password);
 
-const encryptedPassword = encrypt(password);
-const passwords: PasswordEntry[] = loadPasswords();
+    const encryptedPassword = encrypt(password);
 
-passwords.push({
-  account,
-  password: encryptedPassword,
-  strength,
-  breached,
-});
+    await Password.create({
+      account,
+      password: encryptedPassword,
+      strength,
+      breached,
+    });
 
-savePasswords(passwords);
+    console.log("\n✅ Password Saved Successfully!\n");
+    console.log("Account :", account);
+    console.log("Strength:", strength);
+    console.log("Breached:", breached ? "YES" : "NO");
+  } catch (error) {
+    rl.close();
+
+    console.error(error);
+  }
 }

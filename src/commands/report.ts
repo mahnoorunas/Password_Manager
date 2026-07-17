@@ -1,24 +1,25 @@
-import { loadPasswords, PasswordEntry } from "../data";
 
-export default function (): void {
-  const passwords: PasswordEntry[] = loadPasswords();
+import Password from "../models/Password";
+  
+export default async function (): Promise<void> {
+  const passwords = await Password.find();
 
   const total: number = passwords.length;
 
-  const strong: number = passwords.filter(
-    (p: PasswordEntry) => p.strength === "Strong"
-  ).length;
+const strong: number = passwords.filter(
+  (p) => p.strength === "Strong"
+).length;
 
-  const medium: number = passwords.filter(
-    (p: PasswordEntry) => p.strength === "Medium"
+  const medium :number= passwords.filter(
+    (p) => p.strength === "Medium"
   ).length;
 
   const weak: number = passwords.filter(
-    (p: PasswordEntry) => p.strength === "Weak"
+    (p) => p.strength === "Weak"
   ).length;
 
   const breached: number = passwords.filter(
-    (p: PasswordEntry) => p.breached
+    (p) => p.breached
   ).length;
 
   console.log("\n=====Password Security Report =====\n");

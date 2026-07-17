@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const commander_1 = require("commander");
+const connection_1 = require("./database/connection");
 const add_1 = __importDefault(require("./commands/add"));
 const list_1 = __importDefault(require("./commands/list"));
 const check_1 = __importDefault(require("./commands/check"));
@@ -40,5 +41,9 @@ program
     .command("report")
     .description("Generate security report")
     .action(report_1.default);
-program.parse();
+async function main() {
+    await (0, connection_1.connectDB)(); // Connect to MongoDB first
+    program.parse(); // Then run the CLI
+}
+main();
 //# sourceMappingURL=index.js.map

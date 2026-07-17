@@ -37,9 +37,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = default_1;
-const encrypt_1 = require("../utils/encrypt");
 const readline = __importStar(require("readline"));
-const data_1 = require("../data");
+const Password_1 = __importDefault(require("../models/Password"));
+const encrypt_1 = require("../utils/encrypt");
 const passwordStrength_1 = __importDefault(require("../utils/passwordStrength"));
 const breachChecker_1 = __importDefault(require("../utils/breachChecker"));
 async function default_1() {
@@ -52,20 +52,28 @@ async function default_1() {
             rl.question(question, resolve);
         });
     };
-    const account = await ask("Enter Account Name: ");
-    const password = await ask("Enter Password: ");
-    rl.close();
-    const strength = (0, passwordStrength_1.default)(password);
-    console.log("\nChecking breach status...");
-    const breached = await (0, breachChecker_1.default)(password);
-    const encryptedPassword = (0, encrypt_1.encrypt)(password);
-    const passwords = (0, data_1.loadPasswords)();
-    passwords.push({
-        account,
-        password: encryptedPassword,
-        strength,
-        breached,
-    });
-    (0, data_1.savePasswords)(passwords);
+    try {
+        const account = await ask("Enter Account Name: ");
+        const password = await ask("Enter Password: ");
+        rl.close();
+        const strength = (0, passwordStrength_1.default)(password);
+        console.log("\nChecking breach status...");
+        const breached = await (0, breachChecker_1.default)(password);
+        const encryptedPassword = (0, encrypt_1.encrypt)(password);
+        await Password_1.default.create({
+            account,
+            password: encryptedPassword,
+            strength,
+            breached,
+        });
+        console.log("\n✅ Password Saved Successfully!\n");
+        console.log("Account :", account);
+        console.log("Strength:", strength);
+        console.log("Breached:", breached ? "YES" : "NO");
+    }
+    catch (error) {
+        rl.close();
+        console.error(error);
+    }
 }
 //# sourceMappingURL=add.js.map

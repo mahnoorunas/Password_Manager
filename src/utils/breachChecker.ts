@@ -12,28 +12,30 @@ export default async function checkBreach(
   const prefix = sha1.substring(0, 5);
   const suffix = sha1.substring(5);
 
+  console.log("Sending request to API...");
+
   try {
     const response = await fetch(
       `https://api.pwnedpasswords.com/range/${prefix}`
     );
 
-    const text: string = await response.text();
+    console.log("Response received.");
 
-    const hashes: string[] = text.split("\n");
+    const text = await response.text();
+
+    const hashes = text.split("\n");
 
     for (const hash of hashes) {
       const [hashSuffix] = hash.split(":");
 
-      if (hashSuffix === suffix) {
+      if (hashSuffix?.trim() === suffix) {
         return true;
       }
     }
 
     return false;
   } catch (error) {
-    if (error instanceof Error) {
-      console.log(error.message);
-    }
+    console.error("Error:", error);
 
     return false;
   }
